@@ -1,0 +1,66 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Order {
+  id          String           @id @default(cuid())
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  items       EnumOrderItems[]
+  totalAmount Float?
+  status      EnumOrderStatus?
+  orderedAt   DateTime?
+  user        User?            @relation(fields: [userId], references: [id])
+  userId      String?
+}
+
+model Ingredient {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isAvailable Boolean?
+  name        String?
+}
+
+model Pizza {
+  id          String                 @id @default(cuid())
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+  name        String?
+  price       Float?
+  description String?
+  ingredients EnumPizzaIngredients[]
+}
+
+model User {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  firstName   String?
+  lastName    String?
+  username    String   @unique
+  email       String?  @unique
+  password    String
+  roles       Json
+  orders      Order[]
+  phoneNumber String?
+  address     String?
+  name        String?
+}
+
+enum EnumOrderItems {
+  Option1
+}
+
+enum EnumOrderStatus {
+  Option1
+}
+
+enum EnumPizzaIngredients {
+  Option1
+}
